@@ -52,7 +52,8 @@ namespace mlp
         [Differentiable]
         CoopVec<T, K> eval(CoopVec<T, K> x)
         {
-            return no_diff CoopVec<T, K>(a) * x;
+            let aVec = no_diff CoopVec<T, K>(a);
+            return aVec * x;
         }
     };
 
@@ -73,7 +74,8 @@ namespace mlp
         [Differentiable]
         CoopVec<T, K> eval(CoopVec<T, K> x)
         {
-            return exp(x) - no_diff CoopVec<T, K>(T(1.));
+            let one = no_diff CoopVec<T, K>(T(1.));
+            return exp(x) - one;
         }
     };
 
@@ -121,7 +123,9 @@ namespace mlp
         [Differentiable]
         CoopVec<T, K> eval(CoopVec<T, K> x)
         {
-            return x / (no_diff CoopVec<T, K>(T(1.)) + exp(no_diff CoopVec<T, K>(T(-1.)) * x));
+            let one = no_diff CoopVec<T, K>(T(1.));
+            let negOne = no_diff CoopVec<T, K>(T(-1.));
+            return x / (one + exp(negOne * x));
         }
     };
 
@@ -131,8 +135,10 @@ namespace mlp
         [Differentiable]
         CoopVec<T, K> eval(CoopVec<T, K> x)
         {
-            var c1 = no_diff CoopVec<T, K>(T(1.));
-            return no_diff CoopVec<T, K>(T(2.)) / (c1 + exp(no_diff CoopVec<T, K>(T(-2.)) * x)) - c1;
+            let one = no_diff CoopVec<T, K>(T(1.));
+            let two = no_diff CoopVec<T, K>(T(2.));
+            let negTwo = no_diff CoopVec<T, K>(T(-2.));
+            return two / (one + exp(negTwo * x)) - one;
         }
     };
 }
