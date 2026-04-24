@@ -113,7 +113,7 @@ namespace mlp
         }
 
         // Full MLP backward step calculation is infered automatically by Slang autodiff from forward function
-        void backward<Act : IActivation<T, HIDDEN>, FinalAct : IActivation<T, OUTPUTS>>(DifferentialPair<CoopVec<T, INPUTS>> dInputParams, Act act, FinalAct finalAct, CoopVec<T, OUTPUTS> loss)
+        void backward<Act : IActivation<T, HIDDEN>, FinalAct : IActivation<T, OUTPUTS>>(inout DifferentialPair<CoopVec<T, INPUTS>> dInputParams, Act act, FinalAct finalAct, CoopVec<T, OUTPUTS> loss)
         {
             bwd_diff(forward_s<Act, FinalAct>)( dInputParams, DifferentialPtrPair<MatrixBiasBuffer>(parameters, derivatives), layerOffsets, act, finalAct, loss);
         }
@@ -121,6 +121,12 @@ namespace mlp
         {
             var dInputParams = diffPair(inputParams);
             backward(dInputParams, act, finalAct, loss);
+        }
+        CoopVec<T, INPUTS> backwardInputGrad<Act : IActivation<T, HIDDEN>, FinalAct : IActivation<T, OUTPUTS>>(CoopVec<T, INPUTS> inputParams, Act act, FinalAct finalAct, CoopVec<T, OUTPUTS> loss)
+        {
+            var dInputParams = diffPair(inputParams);
+            backward(dInputParams, act, finalAct, loss);
+            return dInputParams.d;
         }
 
         MatrixBiasBuffer parameters;
